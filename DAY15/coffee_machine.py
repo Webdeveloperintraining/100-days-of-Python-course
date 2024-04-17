@@ -24,10 +24,11 @@ MENU = {
     }
 }
 
+profit = 0
 resources = {
-    "water": 300,
-    "milk": 200,
-    "coffee": 100,
+    "water": 3000,
+    "milk": 2000,
+    "coffee": 1000,
 }
 
 currency = {
@@ -39,10 +40,11 @@ currency = {
 
 def main():
     while True:
-        request = input("What would you like? (espresso/latte/capuccino): ").lower()
+        request = input("What would you like? (espresso/latte/cappuccino): ").lower()
         if request == 'report':
             printResources()
-
+        elif request == 'off':
+            break
         elif request in MENU:
             if not check_resources(request):
                 break
@@ -52,12 +54,11 @@ def main():
             if money < coffee_cost:
                 print("Sorry that's not enough money. Money refunded.")
             else:
-                money -= coffee_cost
+                money -= coffee_cost 
                 print(f'Here is ${money} in change')
                 print(f'Here is your {request.title()} ☕ Enjoy!')
-                update_resources(request)
-                print(resources)
-            money = 0
+                update_resources(request,coffee_cost)
+                money = 0
             
 def get_coins():
     print("\nPlease Insert coins: ")
@@ -84,10 +85,14 @@ def printResources():
         else:
             measure = 'g'
         print(f'{ingredient.title()}: {resources[ingredient]}{measure}')
+    print(f'Money: ${profit}')
 
-def update_resources(request):
+def update_resources(request,coffee_cost):
     ingredients_used = MENU[request]['ingredients']
     for ingredient in resources:
+        if ingredient not in ingredients_used:
+            continue
         resources[ingredient] = (resources[ingredient] - ingredients_used[ingredient])
-
+    global profit 
+    profit += coffee_cost
 main()
